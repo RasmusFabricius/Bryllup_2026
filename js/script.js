@@ -84,7 +84,7 @@
       if (it.url) { src = it.url }
       else if (it.secure_url) { src = it.secure_url }
       else if (it.public_id) { src = cloudinaryUrl(`image/upload/${it.public_id}.jpg`) }
-    // duplicates are allowed
+      // duplicates are allowed
       img.src = src;
       img.alt = it.public_id || 'wedding photo';
       wrap.appendChild(img);
@@ -96,10 +96,10 @@
       dl.setAttribute('rel', 'noopener');
       actions.appendChild(dl);
       // (Removed Cloudinary console link per request)
-      wrap.appendChild(actions);
+  wrap.appendChild(actions);
 
       gallery.appendChild(wrap);
-  // duplicates allowed or handled at upload time
+      // duplicates allowed or handled at upload time
     })
   }
 
@@ -121,7 +121,7 @@
       dl.setAttribute('target', '_blank'); dl.setAttribute('rel', 'noopener');
       actions.appendChild(dl);
       // (Removed Cloudinary console link per request)
-      wrap.appendChild(actions);
+  wrap.appendChild(actions);
       gallery.appendChild(wrap);
     })
   }
@@ -207,6 +207,7 @@
   // Wire download all button
   const downloadAllBtn = document.getElementById('download-all-btn');
   if (downloadAllBtn) downloadAllBtn.addEventListener('click', downloadAll);
+  // admin UI removed
   // Validate files and prevent duplicates by hashing (client-side)
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
   function validateBasic(file) {
@@ -264,4 +265,5 @@
 
   await loadWishlist();
   await loadGallery();
+  // debug log removed
 })();
