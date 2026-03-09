@@ -100,17 +100,7 @@
       dl.setAttribute('target','_blank');
       dl.setAttribute('rel','noopener');
       actions.appendChild(dl);
-      // View in Cloudinary Console link (opens asset details)
-      if(publicId){
-        const view = document.createElement('a');
-        const encoded = encodeURIComponent(publicId);
-        view.href = `https://cloudinary.com/console/media_library#/asset/image/upload/${encoded}`;
-        view.innerText = 'View in Cloudinary';
-        view.className = 'btn btn-view';
-        view.setAttribute('target','_blank');
-        view.setAttribute('rel','noopener');
-        actions.appendChild(view);
-      }
+    // (Removed Cloudinary console link per request)
       wrap.appendChild(actions);
 
       gallery.appendChild(wrap);
@@ -135,20 +125,39 @@
       const dl = document.createElement('a'); dl.href = src; dl.innerText = 'Download'; dl.className='btn btn-download';
       dl.setAttribute('target','_blank'); dl.setAttribute('rel','noopener');
       actions.appendChild(dl);
-      if(publicId){
-        const view = document.createElement('a');
-        const encoded = encodeURIComponent(publicId);
-        view.href = `https://cloudinary.com/console/media_library#/asset/image/upload/${encoded}`;
-        view.innerText = 'View in Cloudinary';
-        view.className = 'btn btn-view';
-        view.setAttribute('target','_blank'); view.setAttribute('rel','noopener');
-        actions.appendChild(view);
-      }
+        // (Removed Cloudinary console link per request)
       wrap.appendChild(actions);
       gallery.appendChild(wrap);
     })
   }
 
+    // Download all images currently shown in the gallery
+    async function downloadAll(){
+      const imgs = Array.from(gallery.querySelectorAll('img'));
+      if(imgs.length===0) return alert('No images to download.');
+      // Download sequentially to avoid triggering too many parallel requests
+      for(const img of imgs){
+        try{
+          const url = img.src;
+          // fetch the binary and create a blob download
+          const res = await fetch(url);
+          if(!res.ok) throw new Error(`Failed to download ${url}`);
+          const blob = await res.blob();
+          const a = document.createElement('a');
+          const objectUrl = URL.createObjectURL(blob);
+          a.href = objectUrl;
+          // Derive filename from public_id or url
+          const filename = (img.alt && !img.alt.includes('wedding photo')) ? img.alt + (blob.type ? ('.' + blob.type.split('/')[1]) : '') : url.split('/').pop().split('?')[0];
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(objectUrl);
+          // small pause to be nicer to bandwidth
+          await new Promise(r => setTimeout(r, 300));
+        }catch(e){ console.warn('downloadAll item failed', e); }
+      }
+    }
   async function uploadFiles(files){
     if(!window.CLOUDINARY_CLOUD_NAME || !window.UPLOAD_PRESET){
       uploadStatus.innerText = 'Upload not configured. See README to set up Cloudinary.'; return;
@@ -196,6 +205,9 @@
     uploadFiles(ok);
   })
 
+      // Wire download all button
+      const downloadAllBtn = document.getElementById('download-all-btn');
+      if(downloadAllBtn) downloadAllBtn.addEventListener('click', downloadAll);
   // Validate files client-side: image types and per-file max size (10 MB)
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
   function validateFiles(fileList){
