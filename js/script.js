@@ -96,7 +96,7 @@
       dl.setAttribute('rel', 'noopener');
       actions.appendChild(dl);
       // (Removed Cloudinary console link per request)
-  wrap.appendChild(actions);
+      wrap.appendChild(actions);
 
       gallery.appendChild(wrap);
       // duplicates allowed or handled at upload time
@@ -121,7 +121,7 @@
       dl.setAttribute('target', '_blank'); dl.setAttribute('rel', 'noopener');
       actions.appendChild(dl);
       // (Removed Cloudinary console link per request)
-  wrap.appendChild(actions);
+      wrap.appendChild(actions);
       gallery.appendChild(wrap);
     })
   }
