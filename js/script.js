@@ -1,0 +1,105 @@
+// Client script: loads wishlist, renders gallery and handles uploads.
+(async function(){
+  const wishlistContainer = document.getElementById('wishlist-container');
+  const gallery = document.getElementById('gallery');
+  const uploadBtn = document.getElementById('upload-btn');
+  const photoInput = document.getElementById('photo-input');
+  const uploadStatus = document.getElementById('upload-status');
+
+  // Load wishlist
+  async function loadWishlist(){
+    try{
+      const res = await fetch('data/wishlist.json');
+      const data = await res.json();
+      renderWishlist(data);
+    }catch(e){
+      wishlistContainer.innerText = 'Could not load wishes.';
+      console.error(e);
+    }
+  }
+
+  function renderWishlist(list){
+    if(!Array.isArray(list) || list.length===0){
+      wishlistContainer.innerHTML = '<p>No wishes yet — check back soon.</p>';
+      return;
+    }
+    wishlistContainer.innerHTML = '';
+    list.forEach(w =>{
+      const el = document.createElement('div'); el.className='wish';
+      const title = document.createElement('h3'); title.innerText = w.title||'Untitled';
+      const desc = document.createElement('p'); desc.innerText = w.description||'';
+      el.appendChild(title); el.appendChild(desc);
+      if(w.link){
+        const a = document.createElement('a'); a.href = w.link; a.target='_blank'; a.innerText='More info';
+        el.appendChild(a);
+      }
+      wishlistContainer.appendChild(el);
+    });
+  }
+
+  // Cloudinary gallery & upload (requires config.js with CLOUDINARY_CLOUD_NAME and UPLOAD_PRESET)
+  function cloudinaryUrl(path){
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/${path}`;
+  }
+
+  async function loadGallery(){
+    if(!window.CLOUDINARY_CLOUD_NAME) { gallery.innerHTML = '<p>Gallery not configured. See README.</p>'; return }
+    try{
+      // fetch last 50 images with tag 'wedding-photos'
+      const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/list/wedding-photos.json`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('Failed to fetch gallery');
+      const list = await res.json();
+      renderGallery(list.resources||list); // depending on response shape
+    }catch(e){
+      gallery.innerHTML = '<p>Could not load gallery.</p>';
+      console.error(e);
+    }
+  }
+
+  function renderGallery(items){
+    gallery.innerHTML = '';
+    if(!items || items.length===0){ gallery.innerHTML = '<p>No photos yet.</p>'; return }
+    items.forEach(it=>{
+      const img = document.createElement('img');
+      // support different resource shapes
+      const publicId = it.public_id || it.url || it.path || it.name;
+      if(it.url){ img.src = it.url }
+      else if(it.public_id){ img.src = cloudinaryUrl(`image/upload/${it.public_id}.jpg`) }
+      else img.src = '';
+      gallery.appendChild(img);
+    })
+  }
+
+  async function uploadFiles(files){
+    if(!window.CLOUDINARY_CLOUD_NAME || !window.UPLOAD_PRESET){
+      uploadStatus.innerText = 'Upload not configured. See README to set up Cloudinary.'; return;
+    }
+    uploadStatus.innerText = 'Uploading...';
+    const uploads = Array.from(files).map(file => {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', UPLOAD_PRESET);
+      fd.append('tags', 'wedding-photos');
+      return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {method:'POST',body:fd})
+        .then(r=>r.json());
+    });
+
+    try{
+      const results = await Promise.all(uploads);
+      uploadStatus.innerText = `Uploaded ${results.length} file(s). Refreshing gallery...`;
+      setTimeout(()=>{loadGallery(); uploadStatus.innerText=''},1000);
+    }catch(e){
+      uploadStatus.innerText = 'Upload failed.'; console.error(e);
+    }
+  }
+
+  uploadBtn.addEventListener('click', ()=>{
+    const files = photoInput.files;
+    if(!files || files.length===0) return alert('Choose at least one photo');
+    uploadFiles(files);
+  })
+
+  await loadWishlist();
+  await loadGallery();
+})();
