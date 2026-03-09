@@ -20,6 +20,11 @@ body{font-family:'Times New Roman', serif;background:linear-gradient(180deg,#eaf
 #upload-area{display:flex;gap:0.6rem;align-items:center}
 #gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.6rem;margin-top:1rem}
 #gallery img{width:100%;height:160px;object-fit:cover;border-radius:6px}
+.gallery-item{display:flex;flex-direction:column;gap:0.4rem}
+.gallery-actions{display:flex;gap:0.4rem;align-items:center}
+.btn{display:inline-block;padding:0.35rem 0.6rem;border-radius:6px;text-decoration:none;font-weight:600}
+.btn-download{background:var(--forest);color:var(--paper)}
+.btn-view{background:transparent;border:1px solid var(--forest);color:var(--forest)}
 .site-footer{text-align:center;padding:1.2rem;color:#666}
 .hint{font-size:0.9rem;color:#555}
 @media(min-width:800px){.main-nav a{margin-left:1.6rem}}

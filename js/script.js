@@ -67,16 +67,85 @@
   }
 
   function renderGallery(items){
-    gallery.innerHTML = '';
-    if(!items || items.length===0){ gallery.innerHTML = '<p>No photos yet.</p>'; return }
-    items.forEach(it=>{
+  if(!items || items.length===0){
+    // If there are already items in the gallery (e.g. just uploaded), keep them.
+    if(!gallery.querySelector('.gallery-item')){
+      gallery.innerHTML = '<p>No photos yet.</p>';
+    }
+    return
+  }
+
+  // Merge incoming items into the existing gallery to avoid flicker. Dedupe by image URL.
+  const existingSrc = new Set();
+  gallery.querySelectorAll('img').forEach(img => existingSrc.add(img.src));
+
+  items.forEach(it=>{
+      const wrap = document.createElement('div'); wrap.className='gallery-item';
       const img = document.createElement('img');
       // support different resource shapes
       const publicId = it.public_id || it.url || it.path || it.name;
-      if(it.url){ img.src = it.url }
-      else if(it.public_id){ img.src = cloudinaryUrl(`image/upload/${it.public_id}.jpg`) }
-      else img.src = '';
-      gallery.appendChild(img);
+      let src = '';
+      if(it.url){ src = it.url }
+      else if(it.secure_url){ src = it.secure_url }
+      else if(it.public_id){ src = cloudinaryUrl(`image/upload/${it.public_id}.jpg`) }
+      // skip duplicates
+      if(existingSrc.has(src)) return;
+      img.src = src;
+      img.alt = it.public_id || 'wedding photo';
+      wrap.appendChild(img);
+
+      // download button/link
+      const actions = document.createElement('div'); actions.className='gallery-actions';
+      const dl = document.createElement('a'); dl.href = src; dl.innerText = 'Download'; dl.className='btn btn-download';
+      dl.setAttribute('target','_blank');
+      dl.setAttribute('rel','noopener');
+      actions.appendChild(dl);
+      // View in Cloudinary Console link (opens asset details)
+      if(publicId){
+        const view = document.createElement('a');
+        const encoded = encodeURIComponent(publicId);
+        view.href = `https://cloudinary.com/console/media_library#/asset/image/upload/${encoded}`;
+        view.innerText = 'View in Cloudinary';
+        view.className = 'btn btn-view';
+        view.setAttribute('target','_blank');
+        view.setAttribute('rel','noopener');
+        actions.appendChild(view);
+      }
+      wrap.appendChild(actions);
+
+      gallery.appendChild(wrap);
+      existingSrc.add(src);
+    })
+  }
+
+  // Append items to the existing gallery without wiping current DOM (used after upload)
+  function appendGalleryItems(items){
+    if(!items || items.length===0) return;
+    items.forEach(it=>{
+      const wrap = document.createElement('div'); wrap.className='gallery-item';
+      const img = document.createElement('img');
+      const publicId = it.public_id || it.url || it.path || it.name;
+      let src = '';
+      if(it.url){ src = it.url }
+      else if(it.secure_url){ src = it.secure_url }
+      else if(it.public_id){ src = cloudinaryUrl(`image/upload/${it.public_id}.jpg`) }
+      img.src = src; img.alt = it.public_id || 'wedding photo';
+      wrap.appendChild(img);
+      const actions = document.createElement('div'); actions.className='gallery-actions';
+      const dl = document.createElement('a'); dl.href = src; dl.innerText = 'Download'; dl.className='btn btn-download';
+      dl.setAttribute('target','_blank'); dl.setAttribute('rel','noopener');
+      actions.appendChild(dl);
+      if(publicId){
+        const view = document.createElement('a');
+        const encoded = encodeURIComponent(publicId);
+        view.href = `https://cloudinary.com/console/media_library#/asset/image/upload/${encoded}`;
+        view.innerText = 'View in Cloudinary';
+        view.className = 'btn btn-view';
+        view.setAttribute('target','_blank'); view.setAttribute('rel','noopener');
+        actions.appendChild(view);
+      }
+      wrap.appendChild(actions);
+      gallery.appendChild(wrap);
     })
   }
 
@@ -85,29 +154,67 @@
       uploadStatus.innerText = 'Upload not configured. See README to set up Cloudinary.'; return;
     }
     uploadStatus.innerText = 'Uploading...';
-    const uploads = Array.from(files).map(file => {
+    const uploads = Array.from(files).map(async file => {
       const fd = new FormData();
       fd.append('file', file);
       fd.append('upload_preset', UPLOAD_PRESET);
       fd.append('tags', 'wedding-photos');
-      return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {method:'POST',body:fd})
-        .then(r=>r.json());
+      const resp = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {method:'POST',body:fd});
+      let body = null;
+      try{ body = await resp.json(); }catch(err){ /* ignore parse errors */ }
+      if(!resp.ok){
+        const msg = (body && (body.error && body.error.message)) ? body.error.message : `HTTP ${resp.status}`;
+        throw new Error(`${file.name}: ${msg}`);
+      }
+      return body;
     });
 
     try{
       const results = await Promise.all(uploads);
-      uploadStatus.innerText = `Uploaded ${results.length} file(s). Refreshing gallery...`;
-      setTimeout(()=>{loadGallery(); uploadStatus.innerText=''},1000);
+      uploadStatus.innerText = `Uploaded ${results.length} file(s). Showing uploaded images...`;
+      // Immediately show uploaded images in the gallery without waiting for the server-side manifest
+      const uploadedItems = results.map(r => ({public_id: r.public_id, url: r.secure_url || r.url, format: r.format}));
+      try{
+        // append uploaded items into current gallery display
+        appendGalleryItems(uploadedItems);
+      }catch(e){ console.warn('Could not render uploaded items immediately', e) }
+      // Do not forcibly reload the entire gallery (can cause flicker if server-side listing fails).
+      setTimeout(()=>{ uploadStatus.innerText=''; },1000);
     }catch(e){
-      uploadStatus.innerText = 'Upload failed.'; console.error(e);
+      uploadStatus.innerText = `Upload failed: ${e.message || e}`; console.error('Upload error', e);
     }
   }
 
   uploadBtn.addEventListener('click', ()=>{
     const files = photoInput.files;
     if(!files || files.length===0) return alert('Choose at least one photo');
-    uploadFiles(files);
+    const {ok, bad} = validateFiles(files);
+    if(bad.length){
+      uploadStatus.innerText = bad.join('; ');
+      return;
+    }
+    uploadFiles(ok);
   })
+
+  // Validate files client-side: image types and per-file max size (10 MB)
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+  function validateFiles(fileList){
+    const ok = [];
+    const bad = [];
+    Array.from(fileList).forEach(f => {
+      if(!f.type || !f.type.startsWith('image/')){
+        bad.push(`${f.name}: not an image`);
+        return;
+      }
+      if(f.size > MAX_FILE_SIZE){
+        const mb = Math.round(f.size / (1024*1024));
+        bad.push(`${f.name}: ${mb}MB exceeds ${MAX_FILE_SIZE/(1024*1024)}MB`);
+        return;
+      }
+      ok.push(f);
+    });
+    return {ok,bad};
+  }
 
   await loadWishlist();
   await loadGallery();
