@@ -75,10 +75,6 @@
       return
     }
 
-    // Merge incoming items into the existing gallery to avoid flicker. Dedupe by image URL.
-    const existingSrc = new Set();
-    gallery.querySelectorAll('img').forEach(img => existingSrc.add(img.src));
-
     items.forEach(it => {
       const wrap = document.createElement('div'); wrap.className = 'gallery-item';
       const img = document.createElement('img');
@@ -88,8 +84,7 @@
       if (it.url) { src = it.url }
       else if (it.secure_url) { src = it.secure_url }
       else if (it.public_id) { src = cloudinaryUrl(`image/upload/${it.public_id}.jpg`) }
-      // skip duplicates
-      if (existingSrc.has(src)) return;
+    // duplicates are allowed
       img.src = src;
       img.alt = it.public_id || 'wedding photo';
       wrap.appendChild(img);
@@ -104,7 +99,7 @@
       wrap.appendChild(actions);
 
       gallery.appendChild(wrap);
-      existingSrc.add(src);
+  // duplicates allowed or handled at upload time
     })
   }
 
@@ -195,37 +190,76 @@
   }
 
   uploadBtn.addEventListener('click', () => {
-    const files = photoInput.files;
-    if (!files || files.length === 0) return alert('Choose at least one photo');
-    const { ok, bad } = validateFiles(files);
-    if (bad.length) {
-      uploadStatus.innerText = bad.join('; ');
-      return;
-    }
-    uploadFiles(ok);
+    (async () => {
+      const files = photoInput.files;
+      if (!files || files.length === 0) return alert('Choose at least one photo');
+      uploadStatus.innerText = 'Checking files...';
+      const { ok, bad, dup, stored } = await prepareAndFilterFiles(files);
+      if (bad.length) { uploadStatus.innerText = bad.join('; '); return; }
+      if (dup.length) { uploadStatus.innerText = dup.join('; '); return; }
+      if (ok.length === 0) { uploadStatus.innerText = 'No new files to upload.'; return; }
+      try {
+        await uploadFiles(ok, stored);
+      } catch (e) { console.error(e); }
+    })();
   })
 
   // Wire download all button
   const downloadAllBtn = document.getElementById('download-all-btn');
   if (downloadAllBtn) downloadAllBtn.addEventListener('click', downloadAll);
-  // Validate files client-side: image types and per-file max size (10 MB)
+  // Validate files and prevent duplicates by hashing (client-side)
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-  function validateFiles(fileList) {
+  function validateBasic(file) {
+    if (!file.type || !file.type.startsWith('image/')) return `${file.name}: not an image`;
+    if (file.size > MAX_FILE_SIZE) {
+      const mb = Math.round(file.size / (1024 * 1024));
+      return `${file.name}: ${mb}MB exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB`;
+    }
+    return null;
+  }
+
+  // Compute SHA-1 hash of a File using SubtleCrypto; returns hex string
+  async function hashFile(file) {
+    const buf = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-1', buf);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  }
+
+  function loadStoredHashes() {
+    try {
+      const raw = localStorage.getItem('uploaded_image_hashes');
+      if (!raw) return new Set();
+      const arr = JSON.parse(raw);
+      return new Set(arr);
+    } catch (e) { return new Set(); }
+  }
+
+  function saveStoredHashes(set) {
+    try { localStorage.setItem('uploaded_image_hashes', JSON.stringify(Array.from(set))); } catch (e) { console.warn('Could not save hashes', e); }
+  }
+
+  // Prepare files: basic validation + compute hashes and filter duplicates (in-storage and within selection)
+  async function prepareAndFilterFiles(fileList) {
+    const stored = loadStoredHashes();
     const ok = [];
     const bad = [];
-    Array.from(fileList).forEach(f => {
-      if (!f.type || !f.type.startsWith('image/')) {
-        bad.push(`${f.name}: not an image`);
-        return;
-      }
-      if (f.size > MAX_FILE_SIZE) {
-        const mb = Math.round(f.size / (1024 * 1024));
-        bad.push(`${f.name}: ${mb}MB exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB`);
-        return;
-      }
+    const dup = [];
+    const seen = new Set(); // hashes seen in this selection
+    for (const f of Array.from(fileList)) {
+      const err = validateBasic(f);
+      if (err) { bad.push(err); continue; }
+      let h;
+      try { h = await hashFile(f); } catch (e) { bad.push(`${f.name}: could not hash file`); continue; }
+      if (stored.has(h)) { dup.push(`${f.name}: duplicate (already uploaded)`); continue; }
+      if (seen.has(h)) { dup.push(`${f.name}: duplicate in selection`); continue; }
+      seen.add(h);
+      // attach hash for later use
+      f._hash = h;
       ok.push(f);
-    });
-    return { ok, bad };
+    }
+    return { ok, bad, dup, stored };
   }
 
   await loadWishlist();
