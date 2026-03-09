@@ -5,7 +5,7 @@
   --text:#222;
 }
 *{box-sizing:border-box}
-body{font-family:'Libre Baskerville', serif;background:linear-gradient(180deg,#eaf4ea 0%, #f7efe0 100%);color:var(--text);margin:0}
+body{font-family:'Times New Roman', serif;background:linear-gradient(180deg,#eaf4ea 0%, #f7efe0 100%);color:var(--text);margin:0}
 .site-header{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2rem;background:transparent}
 .brand h1{font-family:'Uncial Antiqua', serif;margin:0;font-size:2.2rem;color:var(--forest)}
 .brand .tag{font-family:'Cinzel Decorative', serif;color:var(--accent);margin-top:0.2rem}

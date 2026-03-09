@@ -19,6 +19,25 @@ node admin/add-wish.js --title "New wish" --description "Details" --link "https:
 
 This will append the wish to `data/wishlist.json`. Commit and push to GitHub to update the public site.
 
+4. Make the gallery reliably show uploaded photos (recommended)
+
+Because GitHub Pages is static, the site cannot list account images from Cloudinary using API keys client-side. Two options are provided:
+
+- Quick public listing (no server): use `config.js` with `CLOUDINARY_CLOUD_NAME` set. The client will try Cloudinary's public list endpoint but this might not work for all accounts.
+- Recommended (reliable): run the admin helper to fetch your Cloudinary images and write a static manifest used by the site. This requires your Cloudinary API key/secret and the `cloudinary` npm package:
+
+```bash
+cd /Users/rasmus/Desktop/Bryllup_test
+npm install cloudinary
+# Run once to fetch images (best run from a safe machine or CI):
+# Provide credentials via env vars for safety
+CLOUDINARY_CLOUD_NAME=yourname CLOUDINARY_API_KEY=... CLOUDINARY_API_SECRET=... node admin/fetch-gallery.js
+
+# This writes data/gallery.json which the site will read. Commit & push the updated data/gallery.json to GitHub so visitors see the gallery.
+```
+
+You can run the fetch periodically from a local machine or in CI (GitHub Actions) to keep the `data/gallery.json` up to date after guests upload photos.
+
 3. Deploy to GitHub Pages
 - Create a GitHub repository and push this folder as the repo root (or use gh-pages branch). Enable GitHub Pages in repository settings (serve from `main` branch / `docs/` or `gh-pages` branch as you prefer).
 
