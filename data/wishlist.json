@@ -8,28 +8,131 @@
   {
     "id":2,
     "title":"Brætspil",
-    "description":"Captain Sonar, The Battle of Hogwarts, Hard to get.",
-    "link":""
+    "description":"Captain Sonar, The Battle of Hogwarts, Hard to get."
   },
 
   {
     "id":3,
     "title":"Lysestager",
-    "description":"Gamle antikke messing lysestager.",
-    "link":""
+    "description":"Gamle antikke messing lysestager."
   },
 
   {
     "id":4,
     "title":"Lamper",
-    "description":"Unikke malerier og skulpturer.",
-    "link":""
+    "description":"."
   },
 
-    {
+  {
     "id":5,
+    "title":"Standerlamper",
+    "description":"Unikke malerier og skulpturer."
+  },
+
+  {
+    "id":6,
+    "title":"Villeroy boch Switch 3",
+    "description":""
+  },
+
+  {
+    "id":7,
+    "title":"Keramiske serveringsfade",
+    "description":""
+  },
+
+  {
+    "id":8,
+    "title":"Keramiske serveringsskåle",
+    "description":""
+  },
+
+  {
+    "id":9,
+    "title":"Vaser",
+    "description":""
+  },
+
+  {
+    "id":10,
+    "title":"Vinglas og champagneglas",
+    "description":""
+  },
+
+  {
+    "id":11,
+    "title":"Glaspynt til vinduer",
+    "description":""
+  },
+
+  {
+    "id":12,
+    "title":"Gulvtæpper",
+    "description":""
+  },
+
+  {
+    "id":13,
+    "title":"Opspænding af rejsebilleder på lærred",
+    "description":""
+  },
+
+  {
+    "id":14,
+    "title":"Dørskilt",
+    "description":""
+  },
+
+  {
+    "id":15,
+    "title":"Vægur",
+    "description":""
+  },
+
+  {
+    "id":16,
+    "title":"Hylder",
+    "description":""
+  },
+
+  {
+    "id":17,
+    "title":"Planter",
+    "description":""
+  },
+
+  {
+    "id":18,
+    "title":"Skærebræt",
+    "description":""
+  },
+
+  {
+    "id":19,
+    "title":"Pyntepuder",
+    "description":""
+  },
+  {
+    "id":20,
+    "title":"Tilskud til klaver",
+    "description":""
+  },
+
+  {
+    "id":99,
+    "title":"Teltgrej",
+    "description":"Letvægts campingstole, campingbord, køkkenudstyr"
+  },
+  {
+    "id":99,
+    "title":"Liggerunderlag til 2 personer",
+    "description":""
+  },
+  {
+    "id":100,
     "title":"Oversigt med links og billeder på ønskeskyen",
     "description":"Følg linket:",
     "link":"https://onskeskyen.dk/s/epjmz1"
   }
+
 ]
