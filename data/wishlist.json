@@ -1,14 +1,35 @@
 [
   {
     "id":1,
-    "title":"Teltgrej",
-    "description":"Alt det nødvendige til telttur.",
-    "link":""
+    "title":"Havekrukker",
+    "description":"I alle størrelser terracotta, mørkegrøn eller blå glasering."
   },
+
   {
     "id":2,
     "title":"Brætspil",
     "description":"Captain Sonar, The Battle of Hogwarts, Hard to get.",
     "link":""
+  },
+
+  {
+    "id":3,
+    "title":"Lysestager",
+    "description":"Gamle antikke messing lysestager.",
+    "link":""
+  },
+
+  {
+    "id":4,
+    "title":"Lamper",
+    "description":"Unikke malerier og skulpturer.",
+    "link":""
+  },
+
+    {
+    "id":5,
+    "title":"Oversigt med links og billeder på ønskeskyen",
+    "description":"Følg linket:",
+    "link":"https://onskeskyen.dk/s/epjmz1"
   }
 ]
