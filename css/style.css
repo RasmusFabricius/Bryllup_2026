@@ -10,7 +10,7 @@
 }
 
 body {
-  font-family: 'Times New Roman', serif;
+  font-family: 'Times New Roman', system-ui, -apple-system, "Segoe UI", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", serif;
   background: linear-gradient(180deg, #eaf4ea 0%, #f7efe0 100%);
   color: var(--text);
   margin: 0
