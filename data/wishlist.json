@@ -1,14 +1,22 @@
 [
   {
+    "id":100,
+    "title":"Ønskeskyen",
+    "description":"Oversigt med links og billeder som inspiration kan findes på ønskeskyen via følgende link:",
+    "link":"https://onskeskyen.dk/s/epjmz1"
+  },
+
+  
+  {
     "id":1,
     "title":"Havekrukker",
-    "description":"I alle størrelser terracotta, mørkegrøn eller blå glasering."
+    "description":"I alle størrelser og former gerne enten terracotta, mørkegrønne eller blå glasering."
   },
 
   {
     "id":2,
     "title":"Brætspil",
-    "description":"Captain Sonar, The Battle of Hogwarts, Hard to get."
+    "description":"The Lord of the Rings Journey in Middle-Earth, Captain Sonar, The Battle of Hogwarts, Hard to get."
   },
 
   {
@@ -19,120 +27,116 @@
 
   {
     "id":4,
-    "title":"Lamper",
-    "description":"."
-  },
-
-  {
-    "id":5,
-    "title":"Standerlamper",
-    "description":"Unikke malerier og skulpturer."
+    "title":"Loftslamper, standerlamper og bordlamper",
+    "description":"Gerne i glas eller stof med et ældre look"
   },
 
   {
     "id":6,
-    "title":"Villeroy boch Switch 3",
-    "description":""
+    "title":"Villeroy & Boch Switch 3",
+    "description":"Frokosttallerkener og middagstallerkener gerne med forskellige mønstre."
   },
 
   {
     "id":7,
     "title":"Keramiske serveringsfade",
-    "description":""
+    "description":"Marokanske stil med gule og blå mønstre."
   },
 
   {
     "id":8,
     "title":"Keramiske serveringsskåle",
-    "description":""
+    "description":"Marokanske stil med gule og blå mønstre."
   },
 
   {
     "id":9,
     "title":"Vaser",
-    "description":""
+    "description":"Elegante vaser i forskellige størrelser og former."
   },
 
   {
     "id":10,
     "title":"Vinglas og champagneglas",
-    "description":""
+    "description":"Gerne med en farvet kant i blå og grønlige farver"
   },
 
   {
     "id":11,
     "title":"Glaspynt til vinduer",
-    "description":""
+    "description":"Gerne dyr eller natur motiver i flotte farver."
   },
 
   {
     "id":12,
     "title":"Gulvtæpper",
-    "description":""
+    "description":"Mønstret i hvide, blå og grønne farver."
   },
 
   {
     "id":13,
     "title":"Opspænding af rejsebilleder på lærred",
-    "description":""
+    "description":"Vi har mange billeder fra vores rejser som vi gerne vil have opspændt på lærred."
   },
 
   {
     "id":14,
     "title":"Dørskilt",
-    "description":""
+    "description":"Med vores nye navne"
   },
 
   {
     "id":15,
-    "title":"Vægur",
-    "description":""
+    "title":"Vintage vægur",
+    "description":"Gerne med et gammelt, hyggeligt udtryk evt. romertal, gammel skrift og gerne i farvene grøn, hvid, brun eller guld."
   },
 
   {
     "id":16,
     "title":"Hylder",
-    "description":""
+    "description":"Gerne i ægte træ."
   },
 
   {
     "id":17,
     "title":"Planter",
-    "description":""
+    "description":"En hårdfør plante som kan vokse sig stor og stærk i løbet af vores ægteskab."
   },
 
   {
     "id":18,
     "title":"Skærebræt",
-    "description":""
+    "description":"Gerne i træ med flot design."
   },
 
-  {
+      {
     "id":19,
-    "title":"Pyntepuder",
-    "description":""
+    "title":"Bordskåner",
+    "description":"I keramik med marokkansk design"
   },
+
   {
     "id":20,
     "title":"Tilskud til klaver",
-    "description":""
+    "description":"Vi har ikke plads endnu men vi drømmer om at få et klaver i fremtiden, så alle bidrag til dette er meget velkomne."
   },
 
   {
-    "id":99,
+    "id":21,
     "title":"Teltgrej",
     "description":"Letvægts campingstole, campingbord, køkkenudstyr"
   },
   {
-    "id":99,
+    "id":22,
     "title":"Liggerunderlag til 2 personer",
-    "description":""
+    "description":"Oppusteligt liggeunderlag i skum som thermarest"
   },
+
   {
-    "id":100,
-    "title":"Oversigt med links og billeder på ønskeskyen",
-    "description":"Følg linket:",
-    "link":"https://onskeskyen.dk/s/epjmz1"
+    "id":23,
+    "title":"Duftsæt til vin",
+    "description":"Til at teste ens lugtesans"
   }
+
 
 ]
