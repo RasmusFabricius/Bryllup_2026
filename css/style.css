@@ -33,6 +33,7 @@ body {
 
 .brand .tag {
   font-family: 'Cinzel Decorative', serif;
+  font-size:1.4rem;
   color: var(--accent);
   margin-top: 0.2rem
 }

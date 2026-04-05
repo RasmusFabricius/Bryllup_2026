@@ -2,7 +2,7 @@
   {
     "id":100,
     "title":"Link til inspiration",
-    "description":"Oversigt med links og billeder som inspiration kan findes på ønskeskyen via følgende link:",
+    "description":"Hvis I vil have et indblik i vores smag, har vi samlet nogle billeder og links på følgende hjemmeside. Vi vil gerne understrege, at det ikke er specifike ønsker, og vi har ikke undersøgt om hjemmesiderne er sikre, så den skal primært ses som en inspirationskilde.",
     "link":"https://onskeskyen.dk/s/epjmz1"
   },
 
@@ -40,13 +40,13 @@
   {
     "id":7,
     "title":"Keramiske serveringsfade",
-    "description":"Marokanske stil med gule og blå mønstre."
+    "description":"Marokansk stil med gule og blå mønstre."
   },
 
   {
     "id":8,
     "title":"Keramiske serveringsskåle",
-    "description":"Marokanske stil med gule og blå mønstre."
+    "description":"Marokansk stil med gule og blå mønstre."
   },
 
   {
@@ -92,12 +92,6 @@
   },
 
   {
-    "id":16,
-    "title":"Hylder",
-    "description":"Gerne i ægte træ."
-  },
-
-  {
     "id":17,
     "title":"Planter",
     "description":"En hårdfør plante som kan vokse sig stor og stærk i løbet af vores ægteskab."
@@ -118,7 +112,7 @@
   {
     "id":20,
     "title":"Tilskud til klaver",
-    "description":"Vi har ikke plads endnu men vi drømmer om at få et klaver i fremtiden, så alle bidrag til dette er meget velkomne."
+    "description":"Vi har ikke plads endnu, men vi drømmer om at få et klaver i fremtiden, så alle bidrag til dette er meget velkomne."
   },
 
   {
@@ -126,6 +120,7 @@
     "title":"Teltgrej",
     "description":"Letvægts campingstole, campingbord, køkkenudstyr."
   },
+
   {
     "id":22,
     "title":"Liggeunderlag til 2 personer",
