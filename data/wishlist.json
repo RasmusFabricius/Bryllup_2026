@@ -7,6 +7,12 @@
   },
 
   
+    {
+    "id":25,
+    "title":"Minder i alle former og størrelser",
+    "description":"Billeder, beskeder eller andet godt fra vores tid sammen og med jer."
+  },
+
   {
     "id":1,
     "title":"Havekrukker",
@@ -16,7 +22,7 @@
   {
     "id":2,
     "title":"Brætspil",
-    "description":"The Lord of the Rings Journey in Middle-Earth, Captain Sonar, The Battle of Hogwarts, Hard to get."
+    "description":"The Lord of the Rings Journey in Middle-Earth, Captain Sonar, The Battle of Hogwarts, Hard to get og så elsker gåde spil som Sherlock Holmes Consulting Detective"
   },
 
   {
@@ -127,8 +133,14 @@
     "description":"Oppusteligt liggeunderlag i skum såsom thermarest."
   },
 
-  {
+    {
     "id":23,
+    "title":"E-bog reader",
+    "description":"Til at læse på vores rejser."
+  },
+
+  {
+    "id":24,
     "title":"Duftsæt til vin",
     "description":"Til at teste ens lugtesans."
   }
